@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Guess a number</title>
+  <style>
+	body {
+		background:#A01551;
+		color:#fff;
+		font-family:Arial;
+		font-size:20px;
+		text-transform:uppercase;
+	}
+	
+	.game {
+		margin:100px auto auto auto;
+		width:500px;
+	}
+	
+	#play-again {
+		display:none;
+	}
+  </style>
+</head>
+<body>
+	
+	<div class="game">
+		<input type="text" id="number-area">
+		<input type="submit" value="Guess" id="submit-number">
+		<input type="submit" value="Play again" id="play-again">
+		<p id="message">Guess a number from 0 to 100</p>
+		<p><span>Previous guesses:</span> <span id="guesses-numbers"><span></p>
+		<p><span>Guesses:</span> <span id="guesses-counter"></span></p>
+		<p><span>Guesses remaining:</span> <span id="guesses-remaining"></span></p>
+	</div>
+
+	<script>
+		
+		var guessesCounter = 0;
+		var guessesRemaining = 10;
+		var correctNumber;
+		var numberConvert;
+		
+		var userGuess;
+		var previousGuessesList;
+		
+		var numberArea = document.getElementById('number-area');
+		var guessButton = document.getElementById('submit-number');
+		var playAgainButton = document.getElementById('play-again');
+		var previousGuessesArea = document.getElementById('guesses-numbers');
+		var guessesCounterArea = document.getElementById('guesses-counter');
+		var guessesRemainingArea = document.getElementById('guesses-remaining');
+		var message = document.getElementById('message');
+		
+		guessesCounterArea.innerHTML = guessesCounter;
+		guessesRemainingArea.innerHTML = guessesRemaining;
+		
+		window.onload = setNumber;
+		
+		function setNumber() {
+			correctNumber = Math.floor(Math.random() * 100);
+		}
+		
+		function checkCorrectness() {
+			userGuess = document.getElementById('number-area').value;
+			numberConvert = Number(userGuess);
+			if (isNaN(numberConvert)) {
+				message.innerHTML = 'It is not a number/integer!';
+			}
+			else if (numberConvert<0 | numberConvert>100) {
+				message.innerHTML = 'From 0 to 100 only!';
+			}
+			else {
+				previousGuessesList = document.createTextNode(userGuess + " ");
+				previousGuessesArea.appendChild(previousGuessesList);
+				if (userGuess > correctNumber) {
+					message.innerHTML = 'Too high!';
+				}
+				else if (userGuess < correctNumber) {
+					message.innerHTML = 'Too low!';
+				}
+				else {
+					message.innerHTML = 'You won!';
+					guessButton.style.display = 'none';
+					numberArea.style.display = 'none';
+					playAgainButton.style.display = 'block';
+				}
+				guessesCounter++;
+				guessesRemaining--;
+				guessesCounterArea.innerHTML = guessesCounter;
+				guessesRemainingArea.innerHTML = guessesRemaining;
+				document.getElementById('number-area').value = "";
+				if (guessesRemaining < 1)  {
+					message.innerHTML = 'You lost the game! The correct number is ' + correctNumber;
+					guessButton.style.display = 'none';
+					numberArea.style.display = 'none';
+					playAgainButton.style.display = 'block';
+				}
+			}
+		}
+		
+		function playAgain() {
+			setNumber();
+			guessesCounter = 0;
+			guessesRemaining = 10;
+			guessButton.style.display = 'inline-block';
+			numberArea.style.display = 'inline-block';
+			playAgainButton.style.display = 'none';
+			previousGuessesArea.innerHTML = "";
+			guessesCounterArea.innerHTML = "";
+				guessesRemainingArea.innerHTML = "";
+			message.innerHTML = '';
+		}
+			
+		guessButton.addEventListener("click", checkCorrectness, true);			
+		playAgainButton.addEventListener("click", playAgain, true);			
+	
+	</script>
+	
+</body>
+</html>
